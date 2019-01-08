@@ -12,11 +12,11 @@ import os
 
 
 class GHCNElement(Enum):
-    PRCP = auto()  # Precipitation(tenths of mm)
-    SNOW = auto()  # Snowfall(mm)
-    SNWD = auto()  # Snow depth(mm)
-    TMAX = auto()  # Maximum temperature(tenths of degrees C)
-    TMIN = auto()  # Minimum temperature(tenths of degrees C)
+    PRCP = auto()  # Precipitation (tenths of mm)
+    SNOW = auto()  # Snowfall (mm)
+    SNWD = auto()  # Snow depth (mm)
+    TMAX = auto()  # Maximum temperature (tenths of degrees C)
+    TMIN = auto()  # Minimum temperature (tenths of degrees C)
 
 
 class GHCN:
@@ -123,7 +123,7 @@ class GHCN:
 
                             # If Entry is about target Variable and within target Year -> Extract
                             if self.span[0] <= year <= self.span[1] and self.element == var:
-                                for day, value in enumerate([int(data[i:i+6]) for i in range(0, len(data), 8)], 1):
+                                for day, value in enumerate([int(data[i:i+5]) for i in range(0, len(data), 8)], 1):
                                     station_data[station_id][f"{year:4d}-{month:02d}-{day:02d}"] = value
 
                     index += 1
@@ -158,6 +158,6 @@ class GHCN:
 
 
 if __name__ == '__main__':
-    pd = GHCN(GHCNElement.TMAX, Country.US).load()
+    pd = GHCN(GHCNElement.PRCP, Country.US).load()
 
     print(pd)
