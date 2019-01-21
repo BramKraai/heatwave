@@ -12,7 +12,6 @@ DATA_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data'))
 
 
 def country_mask(coordinates):
-
     shapefile_path = os.path.join(DATA_ROOT, 'misc/ne_50m_admin_0_countries/ne_50m_admin_0_countries.shp')
 
     countries = shapefile.Reader(shapefile_path)
@@ -26,7 +25,7 @@ def country_mask(coordinates):
 
     for index, coordinate in enumerate(coordinates):
         if len(coordinates) > 1000:
-            print(f"\rCreating Country Mask: "
+            print(f"\rCreating Country Mask: Grid Cell "
                   f"{index+1:7d}/{len(coordinates):7d} "
                   f"({float(index)/float(len(coordinates)):3.1%})", end="")
 
@@ -79,7 +78,3 @@ def era_country_mask(path):
     np.save(mask_file, mask)
 
     return mask
-
-
-if __name__ == '__main__':
-    era_country_mask('/Users/bram/Documents/Computational Science/Thesis/heatwave/data/ERA/t2m_1979-2017_1_12_daily_2.5deg.nc')
