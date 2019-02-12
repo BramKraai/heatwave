@@ -47,8 +47,15 @@ def country_mask(coordinates):
 def era_coordinate_grid(path):
     # Get Latitudes and Longitudes from ERA .nc file
     era = netCDF4.Dataset(path)
-    latitudes = era['latitude'][:]
-    longitudes = era['longitude'][:]
+
+    if 'latitude' in era.variables and 'longitude' in era.variables:
+        latitudes = era['latitude'][:]
+        longitudes = era['longitude'][:]
+    elif 'lat' in era.variables and 'lon' in era.variables:
+        latitudes = era['lat'][:]
+        longitudes = era['lon'][:]
+    else:
+        raise AttributeError("path contains neither 'latitude'/'longitude' nor 'lat'/'lon' fields")
 
     # Create Coordinate Grid
     coordinates = np.empty((len(latitudes), len(longitudes), 2), np.float32)
