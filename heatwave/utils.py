@@ -3,12 +3,43 @@ from heatwave.enums import Country
 import numpy as np
 import netCDF4
 
+from matplotlib import pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+
 from shapely import geometry
 import shapefile
+
 import os
 
 
 DATA_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data'))
+
+
+def plot_earth(view="EARTH"):
+    # Create Big Figure
+    plt.rcParams['figure.figsize'] = [25, 10]
+
+    # create Projection and Map Elements
+    projection = ccrs.PlateCarree()
+    ax = plt.axes(projection=projection)
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS)
+    ax.add_feature(cfeature.STATES)
+    ax.add_feature(cfeature.OCEAN, color="white")
+    ax.add_feature(cfeature.LAND, color="lightgray")
+
+    if view == "US":
+        ax.set_xlim(-130, -65)
+        ax.set_ylim(25, 50)
+    elif view == "EAST US":
+        ax.set_xlim(-105, -65)
+        ax.set_ylim(25, 50)
+    elif view == "EARTH":
+        ax.set_xlim(-180, 180)
+        ax.set_ylim(-90, 90)
+
+    return projection
 
 
 def country_mask(coordinates):
