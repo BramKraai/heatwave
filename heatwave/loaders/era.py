@@ -7,28 +7,31 @@ from typing import List, Tuple
 
 
 class ERA:
-    LONGITUDE = 'longitude'
-    LATITUDE = 'latitude'
+    def __init__(self, path: str, target: str, index: List[slice] = (),
+                 latitude_key: str = 'latitude', longitude_key: str = 'longitude',
+                 time_key: str = 'time', time_unit: str = 'h', time_origin: str = '1900-01-01'):
 
-    TIME = 'time'
-    TIME_UNIT = 'h'
-    TIME_ORIGIN = "1900-01-01"
+        self._latitude_key = latitude_key
+        self._longitude_key = longitude_key
 
-    def __init__(self, path: str, target: str, index: List[slice] = ()):
+        self._time_key = time_key
+        self._time_unit = time_unit
+        self._time_origin = time_origin
+
         self._dataset = netCDF4.Dataset(path)
         self._target = target
         self._index = [
-            index[0] if len(index) >= 1 and index[0] is not None else slice(0, len(self._dataset[ERA.TIME])),
-            index[1] if len(index) >= 2 and index[1] is not None else slice(0, len(self._dataset[ERA.LATITUDE])),
-            index[2] if len(index) >= 3 and index[2] is not None else slice(0, len(self._dataset[ERA.LONGITUDE]))
+            index[0] if len(index) >= 1 and index[0] is not None else slice(0, len(self._dataset[self._time_key])),
+            index[1] if len(index) >= 2 and index[1] is not None else slice(0, len(self._dataset[self._latitude_key])),
+            index[2] if len(index) >= 3 and index[2] is not None else slice(0, len(self._dataset[self._longitude_key]))
         ]
 
-        self._time = self._dataset[ERA.TIME][self._index[0]]
+        self._time = self._dataset[self._time_key][self._index[0]]
         self._time = pd.DataFrame(data=np.arange(len(self._time)),
-                                  index=pd.to_datetime(self._time, unit=ERA.TIME_UNIT, origin=ERA.TIME_ORIGIN))
+                                  index=pd.to_datetime(self._time, unit=self._time_unit, origin=self._time_origin))
 
-        self._latitude = self._dataset[ERA.LATITUDE][self._index[1]].data
-        self._longitude = self._dataset[ERA.LONGITUDE][self._index[2]].data
+        self._latitude = self._dataset[self._latitude_key][self._index[1]].data
+        self._longitude = self._dataset[self._longitude_key][self._index[2]].data
 
         self._shape = len(self._time), len(self._latitude), len(self.longitude)
 
