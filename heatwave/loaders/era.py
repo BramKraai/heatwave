@@ -46,6 +46,8 @@ class ERA:
     def data(self) -> np.ndarray:
         if self._data is None:
             self._data = self._dataset[self._target][self._index]
+            self._data[self._data.mask] = np.nan
+            self._data = np.array(self._data)
         return self._data
 
     @property
@@ -75,3 +77,8 @@ class ERA:
 
     def __repr__(self):
         return f"ERA({self._target}) {self.shape}"
+
+
+if __name__ == '__main__':
+    sst = ERA('/Volumes/Samsung_T5/Thesis/ERA5/sst_1979-2018_1jan_31dec_daily_2.5deg.nc', 'sst')
+    print(np.mean(np.isnan(sst.data)))
