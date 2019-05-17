@@ -31,7 +31,7 @@ def plot_earth(view="EARTH"):
 
     if view == "US":
         ax.set_xlim(-130, -65)
-        ax.set_ylim(25, 50)
+        ax.set_ylim(24, 50)
     elif view == "EAST US":
         ax.set_xlim(-105, -65)
         ax.set_ylim(25, 50)

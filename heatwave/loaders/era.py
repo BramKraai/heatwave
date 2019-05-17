@@ -26,9 +26,10 @@ class ERA:
             index[2] if len(index) >= 3 and index[2] is not None else slice(0, len(self._dataset[self._longitude_key]))
         ]
 
-        self._time = self._dataset[self._time_key][self._index[0]]
-        self._time = pd.DataFrame(data=np.arange(len(self._time)),
-                                  index=pd.to_datetime(self._time, unit=self._time_unit, origin=self._time_origin))
+        self._time = self._dataset[self._time_key]
+        self._time = netCDF4.num2date(self._time[self._index[0]], units=self._time.units, calendar=self._time.calendar)
+        self._time = [f"{date.year:04d}-{date.month:02d}-{date.day:02d}" for date in self._time]
+        self._time = pd.DataFrame(data=np.arange(len(self._time)), index=pd.to_datetime(self._time))
 
         self._latitude = self._dataset[self._latitude_key][self._index[1]].data
         self._longitude = self._dataset[self._longitude_key][self._index[2]].data
