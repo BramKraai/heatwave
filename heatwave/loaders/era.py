@@ -11,6 +11,8 @@ class ERA:
                  latitude_key: str = 'latitude', longitude_key: str = 'longitude',
                  time_key: str = 'time', time_unit: str = 'h', time_origin: str = '1900-01-01'):
 
+        self._path = path
+
         self._latitude_key = latitude_key
         self._longitude_key = longitude_key
 
@@ -38,6 +40,10 @@ class ERA:
 
         self._data = None
         self._anomaly = None
+
+    @property
+    def path(self):
+        return self._path
 
     @property
     def shape(self) -> Tuple[int, int, int]:
@@ -76,10 +82,17 @@ class ERA:
             self._anomaly[:] = df.values.reshape(self._anomaly.shape)
         return self._anomaly
 
+    def reindex(self, index: List[slice] = ()):
+        new_index = []
+        for old, new in zip(self._index, index):
+            if isinstance(old, slice) and isinstance(new, slice):
+                new_index.append(slice(old.start + new.start, old.start + new.stop))
+            else:
+                new_index.append(new)
+
+        return ERA(self._path, self._target, new_index,
+                   self._latitude_key, self._longitude_key,
+                   self._time_key, self._time_unit, self._time_origin)
+
     def __repr__(self):
         return f"ERA({self._target}) {self.shape}"
-
-
-if __name__ == '__main__':
-    sst = ERA('/Volumes/Samsung_T5/Thesis/ERA5/sst_1979-2018_1jan_31dec_daily_2.5deg.nc', 'sst')
-    print(np.mean(np.isnan(sst.data)))

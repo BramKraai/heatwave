@@ -96,7 +96,7 @@ def era_coordinate_grid(path):
     return coordinates
 
 
-def era_country_mask(path):
+def era_country_mask(path, index=None):
     mask_file = os.path.splitext(path)[0] + '_mask.npy'
 
     if os.path.exists(mask_file):
